@@ -12,17 +12,27 @@ import javafx.scene.image.ImageView;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FilterInputStream;
 import java.lang.ref.WeakReference;
 import javafx.concurrent.Task;
-
+import javafx.scene.effect.GaussianBlur;
 import java.io.File;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ControllerDirectories {
     @FXML
     private TreeView<String> treeDirectory;
     @FXML
     private Button buttonLoad;
+
+    @FXML
+    private ImageView imageTree;
+
+    String dirPath;
 
     @FXML
     void loadFolder(ActionEvent event) throws MalformedURLException {
@@ -37,6 +47,7 @@ public class ControllerDirectories {
 
             alert.showAndWait();
         } else {
+            dirPath = choice.getAbsolutePath();
             treeDirectory.setRoot(getNodesForDirectory(choice));
         }
     }
@@ -53,7 +64,7 @@ public class ControllerDirectories {
                     Task task = new Task() {
                         @Override
                         protected Object call() throws Exception {
-                            WeakReference<ImageView> imageForFile = new WeakReference<>(new ImageView(new Image(f.toURI().toURL().toExternalForm(), 20, 20, false, false)));
+                            WeakReference<ImageView> imageForFile = new WeakReference<>(new ImageView(new Image(f.toURI().toURL().toExternalForm(), 50, 50, true, true)));
                             Node jsonImage = imageForFile.get();
 
                             TreeItem<String> temp = new TreeItem<String>(f.getName());
@@ -73,5 +84,38 @@ public class ControllerDirectories {
             }
         }
         return root;
+    }
+
+    @FXML
+    void manipulateImage(ActionEvent event) throws FileNotFoundException {
+        String imgVal = treeDirectory.getSelectionModel().getSelectedItem().getValue();
+        String tempDirPath = dirPath;
+        TreeItem tempParent = treeDirectory.getSelectionModel().getSelectedItem().getParent();
+        List<String> tab = new ArrayList<>();
+
+
+        while(tempParent != null)
+        {
+            tab.add(tempParent.getValue().toString());
+            tempParent = tempParent.getParent();
+        }
+        for (int j = tab.size()-2;j>=0;j--)
+        {
+            tempDirPath += "\\" + tab.get(j);
+        }
+
+        tempDirPath += "\\" + imgVal;
+        imageTree.setImage(new Image(new FileInputStream(tempDirPath)));
+
+    }
+
+    @FXML
+    void blurImage(ActionEvent event)
+    {
+        ImageView img = new ImageView (imageTree.getImage());
+        GaussianBlur gb = new GaussianBlur(9999);
+        img.setEffect(gb);
+        imageTree.setImage(img.getImage());
+        System.out.println("done");
     }
 }
