@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.scene.image.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
@@ -7,17 +8,27 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<AnchorPane prefHeight="468.0" prefWidth="817.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ControllerDirectories">
+<AnchorPane prefHeight="656.0" prefWidth="1066.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ControllerDirectories">
    <children>
-      <Pane layoutX="14.0" layoutY="180.0" prefHeight="255.0" prefWidth="354.0">
+      <Pane layoutY="224.0" prefHeight="433.0" prefWidth="468.0">
          <children>
-            <ImageView fx:id="imageTree" fitHeight="255.0" fitWidth="354.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="imageTree" fitHeight="433.0" fitWidth="468.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true" />
          </children>
       </Pane>
-      <TreeView fx:id="treeDirectory" layoutX="381.0" prefHeight="381.0" prefWidth="436.0" />
+      <TreeView fx:id="treeDirectory" layoutX="708.0" layoutY="6.0" prefHeight="650.0" prefWidth="358.0" />
       <Button fx:id="buttonLoad" layoutX="21.0" layoutY="22.0" mnemonicParsing="false" onAction="#loadFolder" prefHeight="33.0" prefWidth="77.0" text="Load folder" />
       <Button fx:id="buttonImage" layoutX="129.0" layoutY="22.0" mnemonicParsing="false" onAction="#manipulateImage" prefHeight="33.0" prefWidth="107.0" text="View image" />
-      <Button fx:id="buttonBlur" layoutX="27.0" layoutY="118.0" mnemonicParsing="false" onAction="#blurImage" text="Blur Image" />
+      <Button fx:id="buttonBlur" layoutX="15.0" layoutY="129.0" mnemonicParsing="false" onAction="#blurImage" prefHeight="25.0" prefWidth="90.0" text="Blur Image" />
+      <ImageView fx:id="imageTemp" fitHeight="177.0" fitWidth="216.0" layoutX="483.0" layoutY="228.0" pickOnBounds="true" preserveRatio="true" />
+      <Label layoutX="566.0" layoutY="207.0" text="Preview">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <Button fx:id="buttonShadow" layoutX="105.0" layoutY="129.0" mnemonicParsing="false" onAction="#makeShadow" text="Make shadow" />
+      <Button fx:id="buttonSave" layoutX="481.0" layoutY="417.0" mnemonicParsing="false" onAction="#saveImage" prefHeight="40.0" prefWidth="77.0" text="Save" />
+      <Button fx:id="buttonReset" layoutX="621.0" layoutY="417.0" mnemonicParsing="false" onAction="#resetImage" prefHeight="40.0" prefWidth="77.0" text="Reset" />
+      <Button fx:id="buttonLighting" layoutX="195.0" layoutY="129.0" mnemonicParsing="false" onAction="#getLighting" prefHeight="25.0" prefWidth="90.0" text="Lighting" />
+      <Button fx:id="buttonSepia" layoutX="285.0" layoutY="129.0" mnemonicParsing="false" onAction="#getSepia" prefHeight="25.0" prefWidth="90.0" text="Sepia" />
    </children>
 </AnchorPane>

@@ -1,24 +1,30 @@
 package Controllers;
-
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FilterInputStream;
+
+import java.io.*;
 import java.lang.ref.WeakReference;
 import javafx.concurrent.Task;
-import javafx.scene.effect.GaussianBlur;
-import java.io.File;
+
+import loadClasses.blurClass;
+import loadClasses.lightingClass;
+import loadClasses.sepiaClass;
+import loadClasses.shadowClass;
+
+import javax.imageio.ImageIO;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +38,10 @@ public class ControllerDirectories {
     @FXML
     private ImageView imageTree;
 
-    String dirPath;
+    @FXML
+    private ImageView imageTemp;
+
+    String dirPath, tempDirPath;
 
     @FXML
     void loadFolder(ActionEvent event) throws MalformedURLException {
@@ -89,7 +98,7 @@ public class ControllerDirectories {
     @FXML
     void manipulateImage(ActionEvent event) throws FileNotFoundException {
         String imgVal = treeDirectory.getSelectionModel().getSelectedItem().getValue();
-        String tempDirPath = dirPath;
+        tempDirPath = dirPath;
         TreeItem tempParent = treeDirectory.getSelectionModel().getSelectedItem().getParent();
         List<String> tab = new ArrayList<>();
 
@@ -105,17 +114,78 @@ public class ControllerDirectories {
         }
 
         tempDirPath += "\\" + imgVal;
-        imageTree.setImage(new Image(new FileInputStream(tempDirPath)));
+        Image chosenImage = new Image(new FileInputStream(tempDirPath));
+        imageTree.setImage(chosenImage);
+        imageTemp.setImage(chosenImage);
 
     }
 
     @FXML
-    void blurImage(ActionEvent event)
-    {
-        ImageView img = new ImageView (imageTree.getImage());
-        GaussianBlur gb = new GaussianBlur(9999);
-        img.setEffect(gb);
-        imageTree.setImage(img.getImage());
-        System.out.println("done");
+    void blurImage(ActionEvent event) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+
+        ClassLoader clsLoader = ClassLoader.getSystemClassLoader();
+        Class cls1 = clsLoader.loadClass("loadClasses.blurClass");
+        Object obj1 = cls1.newInstance();
+        ((blurClass)obj1).blurImg(imageTemp, imageTree);
     }
+
+    @FXML
+    void makeShadow(ActionEvent event) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+
+        ClassLoader clsLoader = ClassLoader.getSystemClassLoader();
+        Class cls1 = clsLoader.loadClass("loadClasses.shadowClass");
+        Object obj1 = cls1.newInstance();
+        ((shadowClass)obj1).shadowImg(imageTemp, imageTree);
+
+    }
+
+    @FXML
+    void saveImage(ActionEvent event) {
+        WritableImage image = imageTemp.snapshot(new SnapshotParameters(), null);
+
+        // TODO: probably use a file chooser here
+        File file = new File(tempDirPath);
+
+        try {
+            System.out.println(tempDirPath);
+            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+            Image newImage = new Image(new FileInputStream(tempDirPath));
+            imageTemp.setImage(newImage);
+            imageTree.setImage(newImage);
+
+
+        } catch (IOException e) {
+            // TODO: handle exception here
+        }
+    }
+
+    @FXML
+    void resetImage(ActionEvent event) {
+
+        ImageView img = new ImageView (imageTree.getImage());
+
+        SnapshotParameters parameters = new SnapshotParameters();
+
+        WritableImage image = img.snapshot(parameters, null);
+
+        // store the rounded image in the imageView.
+        imageTemp.setImage(image);
+    }
+
+    @FXML
+    void getSepia(ActionEvent event) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        ClassLoader clsLoader = ClassLoader.getSystemClassLoader();
+        Class cls1 = clsLoader.loadClass("loadClasses.sepiaClass");
+        Object obj1 = cls1.newInstance();
+        ((sepiaClass)obj1).sepiaImg(imageTemp, imageTree);
+    }
+
+    @FXML
+    void getLighting(ActionEvent event) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        ClassLoader clsLoader = ClassLoader.getSystemClassLoader();
+        Class cls1 = clsLoader.loadClass("loadClasses.lightingClass");
+        Object obj1 = cls1.newInstance();
+        ((lightingClass)obj1).lightingImg(imageTemp, imageTree);
+    }
+
 }
